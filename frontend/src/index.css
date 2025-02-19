@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+  
+/* Add this to your CSS file */
+
+@keyframes fallingStars {
+    0% {
+      background-position: 0 0; /* Start from the top */
+    }
+    100% {
+      background-position: 0 100%; /* Move to the bottom */
+    }
+  }
+  
+  .starry-animation {
+    animation: fallingStars 20s linear infinite;
+    background-size: cover;
+  }
+  
