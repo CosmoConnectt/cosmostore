@@ -1,46 +1,51 @@
 import express from "express";
 import dotenv from "dotenv";
-import cors from "cors"; // Import CORS
-import { connectDB } from "./lib/db.js";
-import authRoutes from "./routes/auth.route.js";
+import cors from "cors"; 
 import cookieParser from "cookie-parser";
+import path from "path";
+import { fileURLToPath } from "url";
+import { connectDB } from "./lib/db.js";
+
+import authRoutes from "./routes/auth.route.js";
 import productRoutes from "./routes/product.route.js";
 import cartRoutes from "./routes/cart.route.js";
 import couponRoutes from "./routes/coupon.route.js";
 import paymentRoutes from "./routes/payment.route.js";
-import featuredRoutes from './routes/featured.route.js';
-import orderRoutes from "./routes/order.route.js"; // ✅ Corrected for ESM
+import featuredRoutes from "./routes/featured.route.js";
+import orderRoutes from "./routes/order.route.js";
 
-
-
-
-dotenv.config();
+// Load environment variables correctly
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, "../.env") });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Use CORS to allow requests from different origins
-app.use(cors({
-  origin: "http://localhost:5173", // Allow requests from your frontend's URL
-  methods: "GET,POST", // Allowed methods
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-}));
+// CORS Setup
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    methods: "GET,POST",
+    credentials: true,
+  })
+);
 
-app.use(express.json({ limit: "10mb" })); // allows you to parse the body of the request
+// Middleware
+app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/payments", paymentRoutes);
-app.use( "/api/featured", featuredRoutes);
- app.use("/api/orders", orderRoutes);
+app.use("/api/featured", featuredRoutes);
+app.use("/api/orders", orderRoutes);
 
-
-
-
+// Start Server
 app.listen(PORT, () => {
-  console.log("server is running on port http://localhost:" + PORT);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
   connectDB();
 });
