@@ -39,22 +39,21 @@ export const useUserStore = create((set, get) => ({
 
   login: async (email, password) => {
     set({ loading: true });
-  
+
     try {
       const res = await axios.post("/auth/login", { email, password });
-  
+
       if (res.data?.token) {
         localStorage.setItem("token", res.data.token); // Store the token
         axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`; // Set Axios default header
       }
-  
+
       set({ user: res.data, loading: false });
     } catch (error) {
       set({ loading: false });
       toast.error(error.response?.data?.message || "An error occurred");
     }
   },
-  
 
   logout: async () => {
     try {
