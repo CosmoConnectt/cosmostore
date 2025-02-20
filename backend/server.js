@@ -23,13 +23,22 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ✅ FIXED: CORS Setup
-const allowedOrigins = ["http://localhost:5173", "https://cosmoconnect-store.vercel.app"];
+const allowedOrigins = [
+  "http://localhost:5173", 
+  "https://cosmoconnect-store.vercel.app"
+];
 
 app.use(
   cors({
-    origin: allowedOrigins,
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true, // ✅ Allows cookies
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: "GET,POST,PUT,PATCH,DELETE",
+    credentials: true, // ✅ Allows cookies & authentication tokens
     allowedHeaders: ["Content-Type", "Authorization"], 
   })
 );
