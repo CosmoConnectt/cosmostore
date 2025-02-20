@@ -11,7 +11,7 @@ import productRoutes from "./routes/product.route.js";
 import cartRoutes from "./routes/cart.route.js";
 import couponRoutes from "./routes/coupon.route.js";
 import paymentRoutes from "./routes/payment.route.js";
-import featuredRoutes from "./routes/featured.route.js";
+import featuredRoutes from "./routes/featured.route.js"; // ✅ This should be inside /api/products
 import orderRoutes from "./routes/order.route.js";
 
 // Load environment variables
@@ -38,16 +38,21 @@ app.use(
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 
-// Routes
+// ✅ Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/products", featuredRoutes); // ✅ Moved inside /api/products
 app.use("/api/cart", cartRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/payments", paymentRoutes);
-app.use("/api/featured", featuredRoutes);
 app.use("/api/orders", orderRoutes);
 
-// Start Server
+// ✅ Root Route (Optional - Can be used for debugging)
+app.get("/", (req, res) => {
+  res.send("CosmoConnect Store API is running 🚀");
+});
+
+// ✅ Start Server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   connectDB();
